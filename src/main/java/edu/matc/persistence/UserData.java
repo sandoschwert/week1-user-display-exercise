@@ -17,22 +17,26 @@ import java.util.List;
  * @author pwaite
  */
 public class UserData {
-    private List<User> users;
+    //private List<User> users;
     private final Logger logger = Logger.getLogger(this.getClass());
 
+    /*
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
 
         users = getUserData(sql);
         return users;
     }
+    */
 
     public List<User> getUser(String lastName) {
+        List<User> users = new ArrayList<User>();
         String sql = "";
         if (lastName == null || lastName == "") {
             sql = "SELECT * FROM users";
         } else {
             sql = "SELECT * FROM users WHERE last_name LIKE '" + lastName + "'";
+            logger.info("Last Name is " + lastName);
         }
 
         users = getUserData(sql);
@@ -40,7 +44,7 @@ public class UserData {
     }
 
     public List<User> getUserData(String sql) {
-        logger.info("In the getUserData() method");
+        logger.debug("In the getUserData method");
 
         List<User> users = new ArrayList<User>();
         Database database = Database.getInstance();
@@ -66,6 +70,7 @@ public class UserData {
 
 
     private User createUserFromResults(ResultSet results) throws SQLException {
+        logger.debug("In the createUserFromResults method");
         User user = new User();
         user.setLastName(results.getString("last_name"));
         user.setFirstName(results.getString("first_name"));

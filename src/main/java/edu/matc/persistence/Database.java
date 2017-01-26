@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import org.apache.log4j.*;
 /**
  * Provides access the database
  * Created on 8/31/16.
@@ -21,6 +22,8 @@ public class Database {
 
     private Connection connection;
 
+    private final Logger logger = Logger.getLogger(this.getClass());
+
     // private constructor prevents instantiating this class anywhere else
     private Database() {
         loadProperties();
@@ -32,11 +35,13 @@ public class Database {
         try {
             properties.load (this.getClass().getResourceAsStream("/database.properties"));
         } catch (IOException ioe) {
-            System.out.println("Database.loadProperties()...Cannot load the properties file");
-            ioe.printStackTrace();
+            logger.error("Database.loadProperties()...Cannot load the properties file", ioe);
+            //System.out.println("Database.loadProperties()...Cannot load the properties file");
+            //ioe.printStackTrace();
         } catch (Exception e) {
-            System.out.println("Database.loadProperties()..." + e);
-            e.printStackTrace();
+            logger.error("Database.loadProperties()...", e);
+            //System.out.println("Database.loadProperties()..." + e);
+            //e.printStackTrace();
         }
 
     }
@@ -57,6 +62,7 @@ public class Database {
         try {
             Class.forName(properties.getProperty("driver"));
         } catch (ClassNotFoundException e) {
+            logger.error("Database.connect()...MySQL Driver not found", e);
             throw new Exception("Database.connect()... Error: MySQL Driver not found");
         }
 
@@ -69,7 +75,8 @@ public class Database {
             try {
                 connection.close();
             } catch (SQLException e) {
-                System.out.println("Cannot close connection" + e);
+                logger.error("Cannot close connection", e);
+                //System.out.println("Cannot close connection" + e);
             }
         }
 
